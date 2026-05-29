@@ -480,24 +480,32 @@ export const statisticsAPI = {
   },
 
   async categoryStats() {
-    const { data, error } = await supabase
+    const { data: categories } = await supabase
       .from('category')
-      .select(`
-        id,
-        category_name,
-        books!inner(id)
-      `)
+      .select('id, category_name')
       .eq('status', 1)
 
-    if (error) {
-      handleError(error)
+    if (!categories || categories.length === 0) {
       return []
     }
 
+    const categoryIds = categories.map(c => c.id)
+    const { data: books } = await supabase
+      .from('books')
+      .select('category_id')
+      .eq('status', 1)
+      .in('category_id', categoryIds)
+
     const stats = {}
-    data.forEach(cat => {
-      stats[cat.category_name] = stats[cat.category_name] || 0
-      stats[cat.category_name]++
+    categories.forEach(cat => {
+      stats[cat.category_name] = 0
+    })
+
+    books.forEach(book => {
+      const category = categories.find(c => c.id === book.category_id)
+      if (category) {
+        stats[category.category_name]++
+      }
     })
 
     return Object.entries(stats).map(([name, count]) => ({ name, count }))

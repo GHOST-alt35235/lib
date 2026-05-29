@@ -300,6 +300,7 @@ const loadStats = async () => {
 
     console.log('月度数据:', monthlyData.value)
     console.log('分类数据:', categoryData.value)
+    console.log('状态数据:', statusData.value)
 
     if (results.length > 6) {
       const users = results[6] || []
