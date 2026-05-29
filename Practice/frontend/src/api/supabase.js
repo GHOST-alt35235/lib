@@ -302,9 +302,19 @@ export const categoryAPI = {
 export const distributeAPI = {
   async list(params = {}) {
     let query = supabase.from('distribute_record').select(`
-      *,
-      books(id, book_name, isbn),
-      users(id, username, real_name)
+      id,
+      book_id,
+      user_id,
+      operator_id,
+      borrow_date,
+      due_date,
+      return_date,
+      status,
+      remark,
+      renew_count,
+      fine,
+      created_at,
+      books(id, book_name, isbn)
     `)
 
     if (params.userId) {
@@ -319,7 +329,21 @@ export const distributeAPI = {
       handleError(error)
       return []
     }
-    return data
+
+    const userIds = [...new Set(data.map(r => r.user_id).filter(Boolean))]
+    let userMap = {}
+    if (userIds.length > 0) {
+      const { data: users } = await supabase
+        .from('users')
+        .select('id, username, real_name')
+        .in('id', userIds)
+      userMap = users.reduce((acc, u) => ({ ...acc, [u.id]: u }), {})
+    }
+
+    return data.map(record => ({
+      ...record,
+      user: userMap[record.user_id] || null
+    }))
   },
 
   async borrow(data) {
@@ -413,7 +437,12 @@ export const distributeAPI = {
     const { data, error } = await supabase
       .from('distribute_record')
       .select(`
-        *,
+        id,
+        book_id,
+        user_id,
+        borrow_date,
+        due_date,
+        status,
         books(id, book_name, isbn)
       `)
       .eq('user_id', userId)
