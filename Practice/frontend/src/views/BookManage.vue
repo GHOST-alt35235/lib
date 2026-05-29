@@ -13,7 +13,7 @@
             <el-option
               v-for="cat in categories"
               :key="cat.id"
-              :label="cat.categoryName"
+              :label="cat.category_name"
               :value="cat.id"
             />
           </el-select>
@@ -50,15 +50,15 @@
       </template>
       <el-table :data="bookList" border style="width: 100%" stripe>
         <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="bookName" label="书名" min-width="180" />
+        <el-table-column prop="book_name" label="书名" min-width="180" />
         <el-table-column prop="author" label="作者" width="120" />
         <el-table-column prop="publisher" label="出版社" width="160" />
-        <el-table-column prop="categoryName" label="分类" width="100" />
-        <el-table-column prop="totalCount" label="总数" width="70" align="center" />
-        <el-table-column prop="availableCount" label="可借" width="70" align="center">
+        <el-table-column prop="category_name" label="分类" width="100" />
+        <el-table-column prop="total_count" label="总数" width="70" align="center" />
+        <el-table-column prop="available_count" label="可借" width="70" align="center">
           <template #default="{ row }">
-            <span :style="{ color: row.availableCount > 0 ? '#67c23a' : '#f56c6c', fontWeight: 'bold' }">
-              {{ row.availableCount }}
+            <span :style="{ color: row.available_count > 0 ? '#67c23a' : '#f56c6c', fontWeight: 'bold' }">
+              {{ row.available_count }}
             </span>
           </template>
         </el-table-column>
@@ -122,7 +122,7 @@
             <el-option
               v-for="cat in categories"
               :key="cat.id"
-              :label="cat.categoryName"
+              :label="cat.category_name"
               :value="cat.id"
             />
           </el-select>
@@ -252,7 +252,21 @@ const handleAdd = () => {
 }
 
 const handleEdit = (row) => {
-  form.value = { ...row }
+  form.value = {
+    id: row.id,
+    isbn: row.isbn || '',
+    bookName: row.book_name || '',
+    author: row.author || '',
+    publisher: row.publisher || '',
+    publishDate: row.publish_date || '',
+    categoryId: row.category_id || null,
+    description: row.description || '',
+    totalCount: row.total_count || 0,
+    availableCount: row.available_count || 0,
+    price: row.price || 0,
+    location: row.location || '',
+    status: row.status || 1
+  }
   dialogTitle.value = '编辑图书'
   dialogVisible.value = true
 }
@@ -279,11 +293,26 @@ const handleSubmit = async () => {
     if (valid) {
       submitLoading.value = true
       try {
+        const data = {
+          id: form.value.id,
+          isbn: form.value.isbn,
+          book_name: form.value.bookName,
+          author: form.value.author,
+          publisher: form.value.publisher,
+          publish_date: form.value.publishDate,
+          category_id: form.value.categoryId,
+          description: form.value.description,
+          total_count: form.value.totalCount,
+          available_count: form.value.availableCount,
+          price: form.value.price,
+          location: form.value.location,
+          status: form.value.status
+        }
         if (form.value.id) {
-          await bookAPI.update(form.value)
+          await bookAPI.update(data)
           ElMessage.success('更新成功')
         } else {
-          await bookAPI.add(form.value)
+          await bookAPI.add(data)
           ElMessage.success('添加成功')
         }
         dialogVisible.value = false
