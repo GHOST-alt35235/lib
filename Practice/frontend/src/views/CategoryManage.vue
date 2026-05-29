@@ -9,8 +9,8 @@
       </template>
       <el-table :data="categoryList" border row-key="id" style="width: 100%">
         <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="categoryName" label="分类名称" />
-        <el-table-column prop="sortOrder" label="排序" width="80" />
+        <el-table-column prop="category_name" label="分类名称" />
+        <el-table-column prop="sort_order" label="排序" width="80" />
         <el-table-column prop="description" label="描述" />
         <el-table-column prop="status" label="状态" width="80">
           <template #default="{ row }">
@@ -122,10 +122,18 @@ const handleDelete = async (id) => {
 
 const handleSubmit = async () => {
   try {
+    const data = {
+      id: form.value.id,
+      category_name: form.value.categoryName,
+      parent_id: form.value.parentId,
+      sort_order: form.value.sortOrder,
+      description: form.value.description,
+      status: form.value.status
+    }
     if (form.value.id) {
-      await categoryAPI.update(form.value)
+      await categoryAPI.update(data)
     } else {
-      await categoryAPI.add(form.value)
+      await categoryAPI.add(data)
     }
     dialogVisible.value = false
     await loadCategories()

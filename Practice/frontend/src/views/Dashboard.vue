@@ -175,11 +175,13 @@
                 <span class="rank" :class="'rank-' + ($index + 1)">{{ $index + 1 }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="bookName" label="书名" />
+            <el-table-column label="书名">
+              <template #default="{ row }">{{ row.book_name }}</template>
+            </el-table-column>
             <el-table-column prop="author" label="作者" width="120" />
             <el-table-column width="80" align="center">
               <template #default="{ row }">
-                <el-tag type="info" size="small">{{ row.borrowCount }} 次</el-tag>
+                <el-tag type="info" size="small">{{ row.borrowCount || 0 }} 次</el-tag>
               </template>
             </el-table-column>
           </el-table>
@@ -197,12 +199,14 @@
             </div>
           </template>
           <el-table :data="recentRecords" style="width: 100%">
-            <el-table-column prop="bookName" label="图书" />
-            <el-table-column prop="borrowDate" label="借阅日期" width="160">
-              <template #default="{ row }">{{ formatDate(row.borrowDate) }}</template>
+            <el-table-column label="图书">
+              <template #default="{ row }">{{ row.books?.book_name || row.book_name || '-' }}</template>
             </el-table-column>
-            <el-table-column prop="dueDate" label="应还日期" width="160">
-              <template #default="{ row }">{{ formatDate(row.dueDate) }}</template>
+            <el-table-column label="借阅日期" width="160">
+              <template #default="{ row }">{{ formatDate(row.borrow_date) }}</template>
+            </el-table-column>
+            <el-table-column label="应还日期" width="160">
+              <template #default="{ row }">{{ formatDate(row.due_date) }}</template>
             </el-table-column>
             <el-table-column prop="status" label="状态" width="100">
               <template #default="{ row }">
