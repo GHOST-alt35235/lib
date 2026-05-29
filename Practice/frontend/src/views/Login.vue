@@ -70,7 +70,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from '../api/axios'
+import { authAPI } from '../api/supabase'
 import { ElMessage } from 'element-plus'
 import { Reading } from '@element-plus/icons-vue'
 
@@ -89,16 +89,15 @@ const handleLogin = async () => {
   }
   loading.value = true
   try {
-    const response = await axios.post('/auth/login', form, { showMsg: false })
-    if (response.data.code === 200) {
-      localStorage.setItem('userInfo', JSON.stringify(response.data.data))
+    const user = await authAPI.login(form)
+    if (user) {
+      localStorage.setItem('userInfo', JSON.stringify(user))
       ElMessage.success('登录成功！')
       router.push('/dashboard')
-    } else {
-      ElMessage.error(response.data.msg || '登录失败')
     }
   } catch (error) {
     console.error('登录失败:', error)
+    ElMessage.error('登录失败')
   } finally {
     loading.value = false
   }

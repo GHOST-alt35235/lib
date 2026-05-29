@@ -61,7 +61,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { categoryAPI } from '../api/axios'
+import { categoryAPI } from '../api/supabase'
 
 const categoryList = ref([])
 const dialogVisible = ref(false)
@@ -79,8 +79,8 @@ const form = ref({
 
 const loadCategories = async () => {
   try {
-    const response = await categoryAPI.tree()
-    categoryList.value = response.data.data
+    const categories = await categoryAPI.list()
+    categoryList.value = categories
   } catch (error) {
     console.error('获取分类列表失败:', error)
   }

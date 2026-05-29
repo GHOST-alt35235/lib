@@ -37,14 +37,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { distributeAPI } from '../api/axios'
+import { distributeAPI } from '../api/supabase'
 
 const recordList = ref([])
 
 const loadRecords = async () => {
   try {
-    const response = await distributeAPI.myBorrow()
-    recordList.value = response.data.data
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+    const records = await distributeAPI.myBorrow(userInfo.id)
+    recordList.value = records
   } catch (error) {
     console.error('获取借阅记录失败:', error)
   }

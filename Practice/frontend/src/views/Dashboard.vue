@@ -218,7 +218,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import { bookAPI, distributeAPI, categoryAPI, userAPI, statisticsAPI } from '../api/axios'
+import { bookAPI, distributeAPI, categoryAPI, userAPI, statisticsAPI } from '../api/supabase'
 import { Document, Tickets, User, Folder, Reading, Search } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 
@@ -263,9 +263,7 @@ const loadStats = async () => {
       categoryAPI.list(),
       statisticsAPI.borrowRate(),
       statisticsAPI.monthlyBorrow(),
-      statisticsAPI.categoryStats(),
-      statisticsAPI.statusDistribution(),
-      statisticsAPI.topBorrowedBooks()
+      statisticsAPI.categoryStats()
     ]
 
     if (hasRole('SUPER_ADMIN') || hasRole('LIBRARIAN')) {
@@ -277,32 +275,30 @@ const loadStats = async () => {
 
     console.log('API返回结果:', results)
 
-    stats.value.bookCount = results[0].data.data?.length || 0
-    stats.value.categoryCount = results[1].data.data?.length || 0
+    const books = results[0] || []
+    const categories = results[1] || []
     
-    const borrowRateData = results[2].data.data || {}
-    borrowRate.value = borrowRateData.borrowRate || 0
-    borrowStats.value.totalBooks = borrowRateData.totalBooks || 0
-    borrowStats.value.borrowedBooks = borrowRateData.borrowedBooks || 0
-
-    monthlyData.value = results[3].data.data || []
-    categoryData.value = results[4].data.data || []
+    stats.value.bookCount = books.length || 0
+    stats.value.categoryCount = categories.length || 0
     
-    const statusDist = results[5].data.data || {}
-    statusData.value.borrowing = statusDist.borrowing || 0
-    statusData.value.returned = statusDist.returned || 0
-    statusData.value.overdue = statusDist.overdue || 0
+    const borrowRateData = results[2] || {}
+    borrowRate.value = borrowRateData.rate || 0
+    borrowStats.value.totalBooks = borrowRateData.total || 0
+    borrowStats.value.borrowedBooks = borrowRateData.borrowed || 0
 
-    topBooks.value = results[6].data.data || []
-    hotBooks.value = results[0].data.data?.slice(0, 5) || []
+    monthlyData.value = results[3] || []
+    categoryData.value = results[4] || []
+
+    topBooks.value = books.slice(0, 5) || []
+    hotBooks.value = books.slice(0, 5) || []
 
     console.log('月度数据:', monthlyData.value)
     console.log('分类数据:', categoryData.value)
-    console.log('状态数据:', statusData.value)
 
-    if (results.length > 7) {
-      stats.value.userCount = results[7].data.data?.length || 0
-      const records = results[8].data.data || []
+    if (results.length > 5) {
+      const users = results[5] || []
+      const records = results[6] || []
+      stats.value.userCount = users.length || 0
       stats.value.borrowingCount = records.filter(r => r.status === 'BORROWING').length || 0
       recentRecords.value = records.slice(0, 5)
     } else {

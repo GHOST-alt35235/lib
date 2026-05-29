@@ -108,7 +108,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { distributeAPI, bookAPI, userAPI } from '../api/axios'
+import { distributeAPI, bookAPI, userAPI } from '../api/supabase'
 
 const recordList = ref([])
 const availableBooks = ref([])
@@ -144,8 +144,8 @@ const editForm = ref({
 
 const loadRecords = async () => {
   try {
-    const response = await distributeAPI.list({})
-    recordList.value = response.data.data
+    const records = await distributeAPI.list({})
+    recordList.value = records
   } catch (error) {
     console.error('获取借阅记录失败:', error)
   }
@@ -153,9 +153,9 @@ const loadRecords = async () => {
 
 const loadBooks = async () => {
   try {
-    const response = await bookAPI.list({ status: 1 })
-    allBooks.value = response.data.data
-    availableBooks.value = response.data.data.filter(b => b.availableCount > 0)
+    const books = await bookAPI.list({ status: 1 })
+    allBooks.value = books
+    availableBooks.value = books.filter(b => b.available_count > 0)
   } catch (error) {
     console.error('获取图书列表失败:', error)
   }
@@ -163,8 +163,8 @@ const loadBooks = async () => {
 
 const loadUsers = async () => {
   try {
-    const response = await userAPI.list()
-    userList.value = response.data.data.filter(u => u.status === 1)
+    const users = await userAPI.list()
+    userList.value = users.filter(u => u.status === 1)
   } catch (error) {
     console.error('获取用户列表失败:', error)
   }

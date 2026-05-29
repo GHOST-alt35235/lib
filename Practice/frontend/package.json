@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
     "axios": "^1.6.8",
     "echarts": "^6.1.0",
     "element-plus": "^2.6.1",

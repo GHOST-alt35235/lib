@@ -155,7 +155,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus, Edit } from '@element-plus/icons-vue'
-import { bookAPI, categoryAPI } from '../api/axios'
+import { bookAPI, categoryAPI } from '../api/supabase'
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
 
@@ -205,8 +205,8 @@ const loadBooks = async () => {
     if (searchForm.value.categoryId) params.categoryId = searchForm.value.categoryId
     if (searchForm.value.status !== null) params.status = searchForm.value.status
 
-    const response = await bookAPI.list(params)
-    bookList.value = response.data.data || []
+    const books = await bookAPI.list(params)
+    bookList.value = books || []
   } catch (error) {
     console.error('加载图书列表失败:', error)
   }
@@ -214,8 +214,8 @@ const loadBooks = async () => {
 
 const loadCategories = async () => {
   try {
-    const response = await categoryAPI.list()
-    categories.value = response.data.data || []
+    const cats = await categoryAPI.list()
+    categories.value = cats || []
   } catch (error) {
     console.error('加载分类失败:', error)
   }

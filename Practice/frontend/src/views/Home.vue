@@ -77,7 +77,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { authAPI } from '../api/axios'
+import { authAPI } from '../api/supabase'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { House, Document, Tickets, Folder, RefreshLeft, User, ArrowDown, SwitchButton, Reading } from '@element-plus/icons-vue'
 
@@ -109,9 +109,10 @@ const hasRole = (roleCode) => {
 
 const loadUserInfo = async () => {
   try {
-    const response = await authAPI.getUserInfo()
-    userInfo.value = response.data.data
-    localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
+    const stored = localStorage.getItem('userInfo')
+    if (stored) {
+      userInfo.value = JSON.parse(stored)
+    }
   } catch (error) {
     console.error('获取用户信息失败:', error)
   }

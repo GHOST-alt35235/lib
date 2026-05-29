@@ -3,9 +3,12 @@ import { ElMessage } from 'element-plus'
 import router from '../router'
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'https://nxjqylsklmxzgbtlcorl.functions.supabase.co',
   timeout: 10000,
-  withCredentials: true
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer sb_publishable_BhMzmZ4eqq26_aT7W44m9g_M0Lo9BUr'
+  }
 })
 
 instance.interceptors.request.use(

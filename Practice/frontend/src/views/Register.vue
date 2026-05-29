@@ -28,7 +28,8 @@
 <script setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from '../api/axios'
+import { authAPI } from '../api/supabase'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 
@@ -40,15 +41,20 @@ const form = reactive({
 })
 
 const handleRegister = async () => {
+  if (!form.username || !form.password) {
+    ElMessage.warning('请输入用户名和密码')
+    return
+  }
   try {
-    const response = await axios.post('/auth/register', form)
-    if (response.data.code === 201) {
+    const user = await authAPI.register(form)
+    if (user) {
       setTimeout(() => {
         router.push('/login')
       }, 1500)
     }
   } catch (error) {
     console.error('注册失败:', error)
+    ElMessage.error('注册失败')
   }
 }
 

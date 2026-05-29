@@ -78,7 +78,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { userAPI, roleAPI } from '../api/axios'
+import { userAPI, roleAPI } from '../api/supabase'
 
 const userList = ref([])
 const roleList = ref([])
@@ -99,8 +99,8 @@ const form = ref({
 
 const loadUsers = async () => {
   try {
-    const response = await userAPI.list()
-    userList.value = response.data.data
+    const users = await userAPI.list()
+    userList.value = users
   } catch (error) {
     console.error('获取用户列表失败:', error)
   }
@@ -108,8 +108,8 @@ const loadUsers = async () => {
 
 const loadRoles = async () => {
   try {
-    const response = await roleAPI.list()
-    roleList.value = response.data.data
+    const roles = await roleAPI.list()
+    roleList.value = roles
   } catch (error) {
     console.error('获取角色列表失败:', error)
   }
