@@ -331,18 +331,22 @@ export const distributeAPI = {
     }
 
     const userIds = [...new Set(data.map(r => r.user_id).filter(Boolean))]
+    const operatorIds = [...new Set(data.map(r => r.operator_id).filter(Boolean))]
+    const allIds = [...new Set([...userIds, ...operatorIds])]
+    
     let userMap = {}
-    if (userIds.length > 0) {
+    if (allIds.length > 0) {
       const { data: users } = await supabase
         .from('users')
         .select('id, username, real_name')
-        .in('id', userIds)
+        .in('id', allIds)
       userMap = users.reduce((acc, u) => ({ ...acc, [u.id]: u }), {})
     }
 
     return data.map(record => ({
       ...record,
-      user: userMap[record.user_id] || null
+      user: userMap[record.user_id] || null,
+      operator: userMap[record.operator_id] || null
     }))
   },
 

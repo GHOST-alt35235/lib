@@ -11,22 +11,28 @@
       </template>
       <el-table :data="recordList" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="bookName" label="图书" />
-        <el-table-column prop="username" label="借阅用户" width="100" />
-        <el-table-column prop="operatorName" label="操作员" width="100" />
-        <el-table-column prop="borrowDate" label="借阅时间" width="160">
+        <el-table-column label="图书">
+          <template #default="{ row }">{{ row.books?.book_name || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="借阅用户" width="100">
+          <template #default="{ row }">{{ row.user?.real_name || row.user?.username || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="操作员" width="100">
+          <template #default="{ row }">{{ row.operator?.real_name || row.operator?.username || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="借阅时间" width="160">
           <template #default="{ row }">
-            {{ formatDate(row.borrowDate) }}
+            {{ formatDate(row.borrow_date) }}
           </template>
         </el-table-column>
-        <el-table-column prop="dueDate" label="应还时间" width="160">
+        <el-table-column label="应还时间" width="160">
           <template #default="{ row }">
-            {{ formatDate(row.dueDate) }}
+            {{ formatDate(row.due_date) }}
           </template>
         </el-table-column>
-        <el-table-column prop="returnDate" label="归还时间" width="160">
+        <el-table-column label="归还时间" width="160">
           <template #default="{ row }">
-            {{ formatDate(row.returnDate) || '-' }}
+            {{ formatDate(row.return_date) || '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100">
@@ -57,12 +63,12 @@
       <el-form :model="borrowForm" label-width="100px">
         <el-form-item label="选择图书">
           <el-select v-model="borrowForm.bookId" placeholder="请选择图书" filterable style="width: 100%">
-            <el-option v-for="book in availableBooks" :key="book.id" :label="book.bookName + ' (可借:' + book.availableCount + ')'" :value="book.id" />
+            <el-option v-for="book in availableBooks" :key="book.id" :label="book.book_name + ' (可借:' + book.available_count + ')'" :value="book.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="借阅用户">
           <el-select v-model="borrowForm.userId" placeholder="请选择用户" filterable style="width: 100%">
-            <el-option v-for="user in userList" :key="user.id" :label="user.username + ' - ' + user.realName" :value="user.id" />
+            <el-option v-for="user in userList" :key="user.id" :label="user.username + ' - ' + user.real_name" :value="user.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="应还日期">
@@ -82,12 +88,12 @@
       <el-form :model="editForm" label-width="100px">
         <el-form-item label="选择图书">
           <el-select v-model="editForm.bookId" placeholder="请选择图书" filterable style="width: 100%">
-            <el-option v-for="book in allBooks" :key="book.id" :label="book.bookName" :value="book.id" />
+            <el-option v-for="book in allBooks" :key="book.id" :label="book.book_name" :value="book.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="借阅用户">
           <el-select v-model="editForm.userId" placeholder="请选择用户" filterable style="width: 100%">
-            <el-option v-for="user in userList" :key="user.id" :label="user.username + ' - ' + user.realName" :value="user.id" />
+            <el-option v-for="user in userList" :key="user.id" :label="user.username + ' - ' + user.real_name" :value="user.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="应还日期">
@@ -204,9 +210,9 @@ const submitBorrow = async () => {
 const handleEdit = (row) => {
   editForm.value = {
     id: row.id,
-    bookId: row.bookId,
-    userId: row.userId,
-    dueDate: row.dueDate ? new Date(row.dueDate).toISOString().slice(0, 16).replace('T', ' ') : '',
+    bookId: row.book_id,
+    userId: row.user_id,
+    dueDate: row.due_date ? new Date(row.due_date).toISOString().slice(0, 16).replace('T', ' ') : '',
     remark: row.remark || ''
   }
   editDialogVisible.value = true
