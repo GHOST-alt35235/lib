@@ -92,7 +92,23 @@
               <span>图书分类分布</span>
             </div>
           </template>
-          <div ref="categoryChartRef" class="chart-container"></div>
+          <div class="category-table-container">
+            <el-table :data="categoryData" style="width: 100%" :show-header="false">
+              <el-table-column label="分类" width="120">
+                <template #default="{ row }">
+                  <span class="category-name">{{ row.name }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="数量" width="80" align="right">
+                <template #default="{ row }">{{ row.count }} 本</template>
+              </el-table-column>
+              <el-table-column label="占比">
+                <template #default="{ row }">
+                  <el-progress :percentage="getCategoryPercentage(row.count)" :stroke-width="12" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -530,6 +546,12 @@ const getStatusText = (status) => {
   return texts[status] || status
 }
 
+const getCategoryPercentage = (count) => {
+  const total = categoryData.value.reduce((sum, item) => sum + item.count, 0)
+  if (total === 0) return 0
+  return Math.round((count / total) * 100)
+}
+
 const handleResize = () => {
   monthlyChart?.resize()
   categoryChart?.resize()
@@ -758,6 +780,15 @@ onUnmounted(() => {
 .action-item span {
   margin-top: 8px;
   font-size: 14px;
+  color: #303133;
+}
+
+.category-table-container {
+  padding: 10px;
+}
+
+.category-name {
+  font-weight: 500;
   color: #303133;
 }
 
