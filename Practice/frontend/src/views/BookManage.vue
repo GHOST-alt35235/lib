@@ -194,7 +194,7 @@ const rules = {
 }
 
 const hasManagePermission = computed(() => {
-  return userInfo.roles?.some(r => r.roleCode === 'SUPER_ADMIN' || r.roleCode === 'LIBRARIAN' || r.roleCode === 'TEACHER')
+  return userInfo.roles?.some(r => r.role_code === 'SUPER_ADMIN' || r.role_code === 'LIBRARIAN' || r.role_code === 'TEACHER')
 })
 
 const loadBooks = async () => {

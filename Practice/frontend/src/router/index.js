@@ -44,7 +44,7 @@ router.beforeEach((to, from, next) => {
   
   if (userInfoStr && to.meta.roles && to.meta.roles.length > 0) {
     const userInfo = JSON.parse(userInfoStr)
-    const userRoles = userInfo.roles?.map(r => r.roleCode) || []
+    const userRoles = userInfo.roles?.map(r => r.role_code) || []
     const hasPermission = to.meta.roles.some(role => userRoles.includes(role))
     
     if (!hasPermission) {

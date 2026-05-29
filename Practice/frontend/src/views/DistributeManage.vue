@@ -120,11 +120,11 @@ const editDialogVisible = ref(false)
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
 
 const isAdmin = computed(() => {
-  return userInfo.roles?.some(r => r.roleCode === 'SUPER_ADMIN' || r.roleCode === 'LIBRARIAN')
+  return userInfo.roles?.some(r => r.role_code === 'SUPER_ADMIN' || r.role_code === 'LIBRARIAN')
 })
 
 const isSuperAdmin = computed(() => {
-  return userInfo.roles?.some(r => r.roleCode === 'SUPER_ADMIN')
+  return userInfo.roles?.some(r => r.role_code === 'SUPER_ADMIN')
 })
 
 const borrowForm = ref({

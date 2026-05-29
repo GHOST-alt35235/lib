@@ -253,7 +253,7 @@ const categoryChartRef = ref(null)
 const statusChartRef = ref(null)
 
 const hasRole = (roleCode) => {
-  return userInfo.value.roles?.some(role => role.roleCode === roleCode)
+  return userInfo.value.roles?.some(role => role.role_code === roleCode)
 }
 
 const loadStats = async () => {

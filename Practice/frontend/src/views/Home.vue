@@ -104,7 +104,7 @@ const currentPageTitle = computed(() => {
 })
 
 const hasRole = (roleCode) => {
-  return userInfo.value.roles?.some(role => role.roleCode === roleCode)
+  return userInfo.value.roles?.some(role => role.role_code === roleCode)
 }
 
 const loadUserInfo = async () => {
