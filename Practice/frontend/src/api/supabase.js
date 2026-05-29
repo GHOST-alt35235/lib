@@ -521,6 +521,29 @@ export const statisticsAPI = {
     })
 
     return Object.entries(monthly).map(([month, count]) => ({ month, count }))
+  },
+
+  async statusStats() {
+    const { data: borrowing } = await supabase
+      .from('distribute_record')
+      .select('id')
+      .eq('status', 'BORROWING')
+
+    const { data: returned } = await supabase
+      .from('distribute_record')
+      .select('id')
+      .eq('status', 'RETURNED')
+
+    const { data: overdue } = await supabase
+      .from('distribute_record')
+      .select('id')
+      .eq('status', 'OVERDUE')
+
+    return {
+      borrowing: borrowing.length || 0,
+      returned: returned.length || 0,
+      overdue: overdue.length || 0
+    }
   }
 }
 

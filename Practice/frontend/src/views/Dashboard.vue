@@ -267,7 +267,8 @@ const loadStats = async () => {
       categoryAPI.list(),
       statisticsAPI.borrowRate(),
       statisticsAPI.monthlyBorrow(),
-      statisticsAPI.categoryStats()
+      statisticsAPI.categoryStats(),
+      statisticsAPI.statusStats()
     ]
 
     if (hasRole('SUPER_ADMIN') || hasRole('LIBRARIAN')) {
@@ -292,6 +293,7 @@ const loadStats = async () => {
 
     monthlyData.value = results[3] || []
     categoryData.value = results[4] || []
+    statusData.value = results[5] || { borrowing: 0, returned: 0, overdue: 0 }
 
     topBooks.value = books.slice(0, 5) || []
     hotBooks.value = books.slice(0, 5) || []
@@ -299,9 +301,9 @@ const loadStats = async () => {
     console.log('月度数据:', monthlyData.value)
     console.log('分类数据:', categoryData.value)
 
-    if (results.length > 5) {
-      const users = results[5] || []
-      const records = results[6] || []
+    if (results.length > 6) {
+      const users = results[6] || []
+      const records = results[7] || []
       stats.value.userCount = users.length || 0
       stats.value.borrowingCount = records.filter(r => r.status === 'BORROWING').length || 0
       recentRecords.value = records.slice(0, 5)
