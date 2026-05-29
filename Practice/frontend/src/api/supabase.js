@@ -19,7 +19,7 @@ export const authAPI = {
   async login(data) {
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, username, real_name, email, phone, avatar')
+      .select('id, username, password, real_name, email, phone, avatar')
       .eq('username', data.username)
       .eq('status', 1)
       .single()
@@ -31,7 +31,7 @@ export const authAPI = {
 
     const { data: verifyResult } = await supabase.rpc('verify_password', {
       password: data.password,
-      hash: user.password_hash
+      hash: user.password
     })
 
     if (!verifyResult) {
@@ -50,8 +50,10 @@ export const authAPI = {
       .select('role_code, role_name')
       .in('id', roleIds)
 
+    const userData = { ...user }
+    delete userData.password
     return {
-      ...user,
+      ...userData,
       roles: roles.map(r => ({ role_code: r.role_code, role_name: r.role_name }))
     }
   },
